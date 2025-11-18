@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const morgan = require('morgan');
 const http = require('http');
 const socketIo = require('socket.io');
 
@@ -12,6 +13,7 @@ const io = socketIo(server, { cors: { origin: "*" } });
 app.set('io', io); // Make io accessible in routes
 
 app.use(cors());
+app.use(morgan('combined')); // Logging middleware
 app.use(express.json());
 
 // Routes
@@ -22,7 +24,7 @@ app.use('/api/registrations', require('./routes/registrations'));
 app.get('/', (req, res) => res.send('Event Management API'));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/eventdb', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/eventdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('MongoDB connected'))
@@ -35,4 +37,8 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (require.main === module) {
+  server.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`));
+}
+
+module.exports = app;

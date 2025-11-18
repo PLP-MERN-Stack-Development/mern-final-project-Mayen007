@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const Registration = require('../models/Registration');
 const Ticket = require('../models/Ticket');
 const Event = require('../models/Event');
@@ -7,7 +8,15 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Register for event
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, [
+  body('eventId').isMongoId().withMessage('Valid event ID required'),
+  body('ticketType').isIn(['standard', 'vip']).withMessage('Invalid ticket type'),
+  body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { eventId, ticketType, quantity } = req.body;
   try {
     const event = await Event.findById(eventId);

@@ -13,13 +13,13 @@
 
 ### Milestone 2: Backend Development (Week 2-3)
 
-- [ ] Set up Express server with MongoDB connection
-- [ ] Implement User model and auth (register/login)
-- [ ] Implement Event model and CRUD operations
-- [ ] Implement Registration and Ticket models
-- [ ] Add Socket.io for real-time updates
-- [ ] Write unit tests for API endpoints
-- [ ] Add error handling and validation middleware
+- [x] Set up Express server with MongoDB connection
+- [x] Implement User model and auth (register/login)
+- [x] Implement Event model and CRUD operations
+- [x] Implement Registration and Ticket models
+- [x] Add Socket.io for real-time updates
+- [x] Write unit tests for API endpoints
+- [x] Add error handling and validation middleware
 
 ### Milestone 3: Frontend Development (Week 4-5)
 
