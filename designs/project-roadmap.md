@@ -23,12 +23,12 @@
 
 ### Milestone 3: Frontend Development (Week 4-5)
 
-- [ ] Set up React app with routing (React Router)
-- [ ] Create components: EventList, EventDetails, RegistrationForm, etc.
-- [ ] Implement state management (Context API or Redux)
-- [ ] Connect to backend APIs
-- [ ] Add form validation and error handling
-- [ ] Implement real-time updates on frontend
+- [x] Set up React app with routing (React Router)
+- [x] Create components: EventList, EventDetails, RegistrationForm, etc.
+- [x] Implement state management (Context API or Redux)
+- [x] Connect to backend APIs
+- [x] Add form validation and error handling
+- [x] Implement real-time updates on frontend
 
 ### Milestone 4: Testing and QA (Week 6)
 

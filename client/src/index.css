@@ -1,0 +1,35 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+@import "tailwindcss";
+
+/* Custom button components */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: rgb(37, 99, 235);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: rgb(29, 78, 216);
+}
+
+.btn-secondary {
+  background-color: rgb(229, 231, 235);
+  color: rgb(17, 24, 39);
+}
+
+.btn-secondary:hover {
+  background-color: rgb(209, 213, 219);
+}
