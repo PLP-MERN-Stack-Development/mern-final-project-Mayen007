@@ -8,63 +8,135 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("attendee");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
       await register(name, email, password, role);
       navigate("/login");
     } catch (err) {
       setError(err.error || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-          />
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+    <>
+      <section className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Register</h2>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            aria-label="Register form"
           >
-            <option value="attendee">Attendee</option>
-            <option value="organizer">Organizer</option>
-          </select>
-          <button type="submit" className="btn-primary w-full py-2 hover:cursor-pointer">
-            Register
-          </button>
-          {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
-        </form>
-      </div>
-    </section>
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                autoComplete="name"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                aria-required="true"
+                aria-label="Full name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                aria-required="true"
+                aria-label="Email address"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                aria-required="true"
+                aria-label="Password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Role
+              </label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                aria-label="Role"
+              >
+                <option value="attendee">Attendee</option>
+                <option value="organizer">Organizer</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className={`btn-primary w-full py-2 hover:cursor-pointer ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
+              disabled={loading}
+              aria-busy={loading}
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+            {error && (
+              <p
+                className="text-red-600 text-sm font-medium"
+                role="alert"
+                aria-live="assertive"
+              >
+                {error}
+              </p>
+            )}
+          </form>
+        </div>
+      </section>
+    </>
   );
 };
 

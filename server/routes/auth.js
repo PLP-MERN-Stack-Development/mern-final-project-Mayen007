@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -46,6 +47,18 @@ router.post('/login', [
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+
+// Get current user
+router.get('/me', auth, async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+  res.json({
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    role: req.user.role
+  });
 });
 
 module.exports = router;

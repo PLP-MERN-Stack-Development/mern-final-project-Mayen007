@@ -10,7 +10,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      // Optionally fetch user info
+      axios
+        .get("http://localhost:5000/api/auth/me")
+        .then((res) => setUser(res.data))
+        .catch(() => setUser(null));
+    } else {
+      // Don't call setUser synchronously in effect; rely on login/logout to clear user
     }
   }, [token]);
 

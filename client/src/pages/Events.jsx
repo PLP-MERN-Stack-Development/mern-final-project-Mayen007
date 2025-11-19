@@ -36,14 +36,18 @@ const Events = () => {
     return <div className="text-center py-12">Loading events...</div>;
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12">
-      <h2 className="text-4xl font-bold text-gray-900 mb-8">Upcoming Events</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map((ev) => (
-          <EventCard key={ev._id} event={ev} />
-        ))}
-      </div>
-    </section>
+    <>
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <h2 className="text-4xl font-bold text-gray-900 mb-8">
+          Upcoming Events
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((ev) => (
+            <EventCard key={ev._id} event={ev} />
+          ))}
+        </div>
+      </section>
+    </>
   );
 };
 
