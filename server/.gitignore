@@ -17,3 +17,9 @@ pids/
 # Build output
 dist/
 build/
+
+# Scripts
+scripts/
+
+# Data
+data/

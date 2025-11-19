@@ -5,6 +5,14 @@ import AuthContext from "../context/AuthContext";
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  // Move focus to hamburger button when closing sidebar
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setTimeout(() => {
+      const btn = document.getElementById("hamburger-btn");
+      if (btn) btn.focus();
+    }, 0);
+  };
 
   return (
     <>
@@ -66,6 +74,7 @@ const Header = () => {
           </nav>
           {/* Hamburger for mobile */}
           <button
+            id="hamburger-btn"
             className="md:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             aria-label="Open menu"
             onClick={() => setMenuOpen(true)}
@@ -93,14 +102,13 @@ const Header = () => {
           }`}
           aria-hidden={menuOpen ? "false" : "true"}
           inert={!menuOpen}
-          // {...(!menuOpen ? { inert: "" } : {})}
         >
           {/* Overlay */}
           <div
             className={`absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300 ${
               menuOpen ? "opacity-100" : "opacity-0"
             }`}
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenu}
           />
           {/* Sidebar */}
           <aside
@@ -112,14 +120,14 @@ const Header = () => {
               <NavLink
                 to="/"
                 className="text-2xl font-bold"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
                 Event<span className="text-blue-400">Hub</span>
               </NavLink>
               <button
                 className="w-8 h-8 flex items-center justify-center rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Close menu"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
                 <svg
                   width="24"
@@ -147,7 +155,7 @@ const Header = () => {
                       : "text-gray-100 hover:bg-slate-800"
                   }`
                 }
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
                 Events
               </NavLink>
@@ -186,7 +194,7 @@ const Header = () => {
                 <button
                   onClick={() => {
                     logout();
-                    setMenuOpen(false);
+                    closeMenu();
                   }}
                   className="bg-red-600 hover:bg-red-700 text-white py-2 px-2 rounded transition font-medium"
                 >

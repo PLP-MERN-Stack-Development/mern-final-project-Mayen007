@@ -9,7 +9,7 @@ describe('Events API', () => {
   let userId;
 
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/testdb');
+    await mongoose.connect(process.env.MONGODB_URI_TEST || 'mongodb://localhost:27017/testdb');
     // Create a test user
     const user = new User({ name: 'Organizer', email: 'org@example.com', password: 'password', role: 'organizer' });
     await user.save();

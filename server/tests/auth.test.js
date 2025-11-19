@@ -5,7 +5,7 @@ const app = require('../server'); // Need to export app from server.js
 describe('Auth API', () => {
   beforeAll(async () => {
     // Connect to test DB
-    await mongoose.connect(process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/testdb');
+    await mongoose.connect(process.env.MONGODB_URI_TEST || 'mongodb://localhost:27017/testdb');
   });
 
   afterAll(async () => {

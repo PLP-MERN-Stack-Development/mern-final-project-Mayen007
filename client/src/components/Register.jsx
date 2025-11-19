@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
 const Register = () => {
@@ -9,6 +9,7 @@ const Register = () => {
   const [role, setRole] = useState("attendee");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -16,9 +17,13 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
     try {
       await register(name, email, password, role);
-      navigate("/login");
+      setSuccess("Account created successfully! Please login.");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1800);
     } catch (err) {
       setError(err.error || "Registration failed");
     } finally {
@@ -53,7 +58,7 @@ const Register = () => {
                 required
                 aria-required="true"
                 aria-label="Full name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
               />
             </div>
             <div>
@@ -73,7 +78,7 @@ const Register = () => {
                 required
                 aria-required="true"
                 aria-label="Email address"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
               />
             </div>
             <div>
@@ -93,7 +98,7 @@ const Register = () => {
                 required
                 aria-required="true"
                 aria-label="Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
               />
             </div>
             <div>
@@ -107,7 +112,7 @@ const Register = () => {
                 id="role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
                 aria-label="Role"
               >
                 <option value="attendee">Attendee</option>
@@ -116,12 +121,34 @@ const Register = () => {
             </div>
             <button
               type="submit"
-              className={`btn-primary w-full py-2 hover:cursor-pointer ${
+              className={`btn-primary w-full py-3 text-base rounded-lg flex items-center justify-center gap-2 hover:cursor-pointer ${
                 loading ? "opacity-60 cursor-not-allowed" : ""
               }`}
               disabled={loading}
               aria-busy={loading}
             >
+              {loading && (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               {loading ? "Registering..." : "Register"}
             </button>
             {error && (
@@ -133,6 +160,23 @@ const Register = () => {
                 {error}
               </p>
             )}
+            {success && (
+              <p
+                className="text-green-600 text-sm font-medium mt-2"
+                role="status"
+                aria-live="polite"
+              >
+                {success}
+              </p>
+            )}
+            <p>
+              Already have an account?
+              <Link to="/login" className="text-blue-600 hover:underline">
+                {" "}
+                signin here
+              </Link>
+              .
+            </p>
           </form>
         </div>
       </section>

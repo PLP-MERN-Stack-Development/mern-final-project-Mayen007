@@ -7,7 +7,7 @@ const EventCard = ({ event }) => {
   return (
     <>
       <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
-        <div className="h-40 bg-gray-200">
+        <div className=" bg-gray-200 mb-2">
           <PlaceholderImage alt={event.title} />
         </div>
         <div className="p-4">
@@ -22,7 +22,7 @@ const EventCard = ({ event }) => {
             {event.description && event.description.length > 100 ? "…" : ""}
           </p>
           <div className="flex items-center justify-between">
-            <Link to={`/events/${event._id}`} className="btn-primary text-sm">
+            <Link to={`/events/${event._id}`} className="btn-primary text-sm py-2 px-3 rounded border-2">
               View Details
             </Link>
             <span className="font-bold text-blue-600">${event.price}</span>

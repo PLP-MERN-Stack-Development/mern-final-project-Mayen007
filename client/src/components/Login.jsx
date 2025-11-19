@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,7 +50,7 @@ const Login = () => {
                 required
                 aria-required="true"
                 aria-label="Email address"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
               />
             </div>
             <div>
@@ -70,12 +70,12 @@ const Login = () => {
                 required
                 aria-required="true"
                 aria-label="Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
               />
             </div>
             <button
               type="submit"
-              className={`btn-primary w-full py-2 hover:cursor-pointer ${
+              className={`btn-primary w-full py-3 text-base rounded-lg hover:cursor-pointer ${
                 loading ? "opacity-60 cursor-not-allowed" : ""
               }`}
               disabled={loading}
@@ -92,6 +92,13 @@ const Login = () => {
                 {error}
               </p>
             )}
+            <p>
+              Don't have an account?{" "}
+              <Link to="/register" className="text-blue-600 hover:underline">
+                signup here
+              </Link>
+              .
+            </p>
           </form>
         </div>
       </section>
