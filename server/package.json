@@ -1,6 +1,6 @@
 {
-  "name": "reviwa-server-v2",
-  "version": "2.0.0",
+  "name": "server",
+  "version": "1.0.0",
   "description": "Clean, modern backend for Reviwa waste management platform",
   "main": "server.js",
   "type": "module",
