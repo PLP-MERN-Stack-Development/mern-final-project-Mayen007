@@ -1,44 +1,59 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const morgan = require('morgan');
-const http = require('http');
-const socketIo = require('socket.io');
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: "*" } });
-
-app.set('io', io); // Make io accessible in routes
-
-app.use(cors());
-app.use(morgan('combined')); // Logging middleware
-app.use(express.json());
-
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/events', require('./routes/events'));
-app.use('/api/registrations', require('./routes/registrations'));
-
-app.get('/', (req, res) => res.send('Event Management API'));
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/eventdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
-
-// Socket.io for real-time
-io.on('connection', (socket) => {
-  console.log('User connected');
-  socket.on('disconnect', () => console.log('User disconnected'));
-});
+import './config/env.js'; // Load environment variables FIRST
+import connectDB from './config/database.js';
+import * as Sentry from '@sentry/node';
+import { Integrations } from '@sentry/tracing';
+import { createServer } from 'http';
+import { Server as IOServer } from 'socket.io';
+import registerSockets from './sockets/index.js';
+import app from './app.js';
 
 const PORT = process.env.PORT || 5000;
-if (require.main === module) {
-  server.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`));
+
+// Initialize Sentry (if DSN provided)
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [new Integrations.Express({ app: undefined })],
+    tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
+    environment: process.env.NODE_ENV || 'development'
+  });
+  console.log('📡 Sentry initialized');
+} else {
+  console.log('📡 Sentry not configured (SENTRY_DSN not set)');
 }
 
-module.exports = app;
+// Connect to MongoDB (entrypoint only)
+connectDB();
+
+// Configure allowed origins to match app
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://reviwa.netlify.app',
+  process.env.CLIENT_URL
+]
+  .filter(Boolean)
+  .map((url) => url.replace(/\/$/, ''));
+
+// Start server with Socket.IO
+const httpServer = createServer(app);
+
+const io = new IOServer(httpServer, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true
+  }
+});
+
+// Attach io to app locals so controllers can access it via req.app.locals.io
+app.locals.io = io;
+
+// Register socket handlers
+registerSockets(io);
+
+httpServer.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV}`);
+  console.log('⚡ Socket.IO initialized');
+});

@@ -1,0 +1,58 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main, testing-branch]
+  pull_request:
+    branches: [main, testing-branch]
+
+jobs:
+  server-tests:
+    name: Server tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Run server tests
+        working-directory: server
+        run: npm run test --if-present
+
+  client-tests:
+    name: Client tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Build client
+        working-directory: client
+        run: npm run build --if-present
+
+      - name: Run client tests
+        working-directory: client
+        run: npm run test --if-present
+        env:
+          # Preload test shim so modules that inspect ArrayBuffer/SharedArrayBuffer
+          # descriptors don't crash during import (webidl-conversions / whatwg-url).
+          NODE_OPTIONS: "--require ./src/vitest-preload.cjs"

@@ -1,0 +1,13 @@
+[build]
+  base = "client"
+  publish = "dist"
+  command = "npm ci && npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA redirect rule - redirect all routes to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

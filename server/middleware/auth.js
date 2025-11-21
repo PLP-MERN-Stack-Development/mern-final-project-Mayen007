@@ -1,16 +1,57 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.model.js';
 
-const auth = async (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'No token' });
+/**
+ * Protect routes - verify JWT token
+ */
+export const protect = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    req.user = await User.findById(decoded.id);
+    let token;
+
+    // Check for token in Authorization header
+    if (req.headers.authorization?.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, no token provided'
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Get user from token (exclude password)
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
     next();
-  } catch (err) {
-    res.status(401).json({ error: 'Invalid token' });
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, token failed'
+    });
   }
 };
 
-module.exports = auth;
+/**
+ * Check if user is admin
+ */
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({
+      success: false,
+      message: 'Not authorized as admin'
+    });
+  }
+};
